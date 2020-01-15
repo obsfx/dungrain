@@ -23,7 +23,7 @@ export default class Room implements IRoom {
         ctx.fillStyle = 'red';
         ctx.fillRect(x, y, w, h);
 
-        ctx.strokeStyle = 'blue';
-        ctx.strokeRect(x, y, w, h);
+        // ctx.strokeStyle = 'blue';
+        // ctx.strokeRect(x, y, w, h);
     }
 }

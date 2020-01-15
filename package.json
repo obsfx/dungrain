@@ -7,7 +7,7 @@
     "build": "tsc -b",
     "watch": "tsc -b --watch",
     "parcel": "parcel ./dev/index.html --out-dir ./output",
-    "parcel-build":" parcel build ./src/index.ts --out-dir ./build --out-file dungrain.build.js",
+    "parcel-build": "parcel build ./src/index.ts --out-dir ./build --out-file dungrain.build.js",
     "rmout": "rm -R ./dist"
   },
   "author": "obsfx",

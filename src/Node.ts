@@ -13,6 +13,10 @@ interface INodeChunk {
     y: number;
     w: number;
     h: number;
+    minRatio: number;
+    maxRatio: number;
+    minWidth: number;
+    minHeight: number;
 }
 
 interface INode {
@@ -27,6 +31,7 @@ interface INode {
     split(iterationCount: number, RNG: seedrandom.prng): void;
     getChunks(): INodeChunk[];
     generateRoom(): void;
+    createPath(chunkLeft: INodeChunk, chunkRight: INodeChunk): void
 }
 
 export default class Node implements INode {
@@ -51,8 +56,7 @@ export default class Node implements INode {
     }
 
     random(min: number, max: number): number {
-
-        return 1;
+        return Math.floor(this.RNG() * (max - min)) + min
     }
 
     split(iterationCount: number): void {
@@ -65,15 +69,19 @@ export default class Node implements INode {
 
         let ratio: number = this.chunk.w / this.chunk.h;
 
-        if (ratio <= 0.5) {
+        if (ratio <= this.chunk.minRatio) {
             direction = SplitDirection.HORIZONTAL;
-        } else if (ratio >= 2) {
+        } else if (ratio >= this.chunk.maxRatio) {
             direction = SplitDirection.VERTICAL;
         }
 
+        // let shiftOffset: number = (direction == SplitDirection.VERTICAL) ? 
+        // Math.floor(this.RNG() * (this.chunk.w / 4) * 2) - this.chunk.w / 4: 
+        // Math.floor(this.RNG() * (this.chunk.h / 4) * 2) - this.chunk.h / 4;
+
         let shiftOffset: number = (direction == SplitDirection.VERTICAL) ? 
-        Math.floor(this.RNG() * (this.chunk.w / 4) * 2) - this.chunk.w / 4: 
-        Math.floor(this.RNG() * (this.chunk.h / 4) * 2) - this.chunk.h / 4;
+        this.random(-this.chunk.w / 4, this.chunk.w / 4) : 
+        this.random(-this.chunk.h / 4, this.chunk.h / 4);
 
         this.left = new Node({
             x: this.chunk.x,
@@ -88,7 +96,12 @@ export default class Node implements INode {
 
             h: (direction == SplitDirection.VERTICAL) ? 
             this.chunk.h : 
-            this.chunk.h / 2 + shiftOffset
+            this.chunk.h / 2 + shiftOffset,
+
+            minRatio: this.chunk.minRatio,
+            maxRatio: this.chunk.maxRatio,
+            minWidth: this.chunk.minWidth,
+            minHeight: this.chunk.minHeight
         }, this.RNG);
 
         this.right = new Node({
@@ -104,26 +117,39 @@ export default class Node implements INode {
 
             h: (direction == SplitDirection.VERTICAL) ? 
             this.chunk.h : 
-            this.chunk.h / 2 - shiftOffset
+            this.chunk.h / 2 - shiftOffset,
+
+            minRatio: this.chunk.minRatio,
+            maxRatio: this.chunk.maxRatio,
+            minWidth: this.chunk.minWidth,
+            minHeight: this.chunk.minHeight
         }, this.RNG);
 
+        // ctx.fillStyle = 'black';
+        // ctx.fillRect(this.right.chunk.x - 5, this.right.chunk.y - 5, 10, 10);
+
+        // ctx.fillStyle = 'black';
+        // ctx.fillRect(this.left.chunk.x - 5, this.left.chunk.y - 5, 10, 10);
+
         if (iterationCount > 0) {
-            if (this.left.chunk.w > 50 && this.left.chunk.h > 50) {
+            if (this.left.chunk.w > this.left.chunk.minWidth && this.left.chunk.h > this.left.chunk.minHeight) {
                 this.left.split(iterationCount - 1);
             }
             
-            if (this.right.chunk.w > 50 && this.right.chunk.h > 50) {
+            if (this.right.chunk.w > this.right.chunk.minWidth && this.right.chunk.h > this.right.chunk.minHeight) {
                 this.right.split(iterationCount - 1);
             }
         }
 
-        // if (!this.left.isSplit) {
-        //     this.left.generateRoom(this.RNG());
-        // }
+        if (!this.left.isSplit) {
+            this.left.generateRoom();
+        }
 
-        // if (!this.right.isSplit) {
-        //     this.right.generateRoom(RNG);
-        // }
+        if (!this.right.isSplit) {
+            this.right.generateRoom();
+        }
+
+        this.createPath(this.left.chunk, this.right.chunk);
     }
 
     getChunks(): INodeChunk[] {
@@ -142,6 +168,23 @@ export default class Node implements INode {
         // let w: number = Math.floor(RNG() * (this.chunk.w - 6 - (x - this.chunk.x) - this.chunk.w / 4)) + this.chunk.w / 4;
         // let h: number = Math.floor(RNG() * (this.chunk.h - 6 - (y - this.chunk.y) - this.chunk.h / 4)) + this.chunk.h / 4;
 
-        // this.room = new Room(x, y, w, h);
+        let x: number = this.chunk.x + this.random(this.chunk.w / 10, this.chunk.w / 5);
+        let y: number = this.chunk.y + this.random(this.chunk.h / 10, this.chunk.h / 5);
+
+        let w: number = this.random(this.chunk.w / 3, this.chunk.w - (x - this.chunk.x));
+        let h: number = this.random(this.chunk.h / 3, this.chunk.h - (y - this.chunk.y));
+
+        this.room = new Room(x, y, w, h);
+    }
+
+    createPath(chunkLeft: INodeChunk, chunkRight: INodeChunk): void {
+
+        ctx.beginPath();
+        ctx.moveTo(chunkLeft.x + chunkLeft.w / 2 - 5, chunkLeft.y + chunkLeft.h / 2 - 5);
+        ctx.lineTo(chunkRight.x + chunkRight.w / 2 - 5, chunkRight.y + chunkRight.h / 2 - 5);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.closePath();
     }
 }
