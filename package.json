@@ -1,0 +1,22 @@
+{
+  "name": "dg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b --watch",
+    "parcel": "parcel ./dev/index.html --out-dir ./output",
+    "rmout": "rm -R ./dist"
+  },
+  "author": "obsfx",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/seedrandom": "^2.4.28",
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "seedrandom": "^3.0.5"
+  }
+}
