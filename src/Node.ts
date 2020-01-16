@@ -25,7 +25,7 @@ interface INode {
     left: Node | null;
     right: Node | null;
     room: Room | null;
-    path: Path | null;
+    paths: Path[] | null;
     splitDirection: SplitDirection;
     isSplit: boolean;
     RNG: seedrandom.prng;
@@ -33,6 +33,7 @@ interface INode {
     random(min: number, max: number): number;
     split(iterationCount: number, RNG: seedrandom.prng): void;
     generateRooms(): void;
+    constructPath(x1: number, y1: number, x2: number, y2: number): Path;
     createPaths(chunkLeft: INodeChunk, chunkRight: INodeChunk): void;
     getChunks(): INodeChunk[];
     getRooms(): Room[];
@@ -45,7 +46,7 @@ export default class Node implements INode {
     right: Node | null;
     room: Room | null;
     splitDirection: SplitDirection;
-    path: Path | null;
+    paths: Path[];
     isSplit: boolean;
     RNG: seedrandom.prng;
 
@@ -54,7 +55,7 @@ export default class Node implements INode {
         this.left = null;
         this.right = null;
         this.room = null;
-        this.path = null;
+        this.paths = [];
         this.splitDirection = SplitDirection.VERTICAL;
         this.isSplit = false;
         this.RNG = RNG;
@@ -170,11 +171,17 @@ export default class Node implements INode {
         // let h: number = Math.floor(RNG() * (this.chunk.h - 6 - (y - this.chunk.y) - this.chunk.h / 4)) + this.chunk.h / 4;
 
         if (!this.isSplit) {
-            let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w / 10, this.chunk.w / 5));
-            let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h / 10, this.chunk.h / 5));
+            // let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w / 6, this.chunk.w / 3));
+            // let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h / 6, this.chunk.h / 3));
 
-            let w: number = Math.floor(this.random(this.chunk.w / 3, this.chunk.w - (x - this.chunk.x)));
-            let h: number = Math.floor(this.random(this.chunk.h / 3, this.chunk.h - (y - this.chunk.y)));
+            let x: number = Math.floor(this.chunk.x);
+            let y: number = Math.floor(this.chunk.y);
+
+            // let w: number = Math.floor(this.random(this.chunk.w / 3, this.chunk.w - (x - this.chunk.x)));
+            // let h: number = Math.floor(this.random(this.chunk.h / 3, this.chunk.h - (y - this.chunk.y)));
+
+            let w: number = 10;
+            let h: number = 10;
 
             this.room = new Room(x, y, w, h);
         }
@@ -191,12 +198,13 @@ export default class Node implements INode {
     createPaths(): void {
 
         if (this.left != null && this.right != null) {
-            // ctx.beginPath();
-            // ctx.moveTo(this.left.chunk.x + this.left.chunk.w / 2 - 1, this.left.chunk.y + this.left.chunk.h / 2 - 1);
-            // ctx.lineTo(this.right.chunk.x + this.right.chunk.w / 2 - 1, this.right.chunk.y + this.right.chunk.h / 2 - 1);
-            // ctx.lineWidth = 2;
-            // ctx.stroke();
-            // ctx.closePath();
+            ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.moveTo(this.left.chunk.x + this.left.chunk.w / 2 - 1, this.left.chunk.y + this.left.chunk.h / 2 - 1);
+            ctx.lineTo(this.right.chunk.x + this.right.chunk.w / 2 - 1, this.right.chunk.y + this.right.chunk.h / 2 - 1);
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
 
             let x1: number = Math.floor(this.left.chunk.x + this.left.chunk.w / 2);
             let y1: number = Math.floor(this.left.chunk.y + this.left.chunk.h / 2);
@@ -204,10 +212,10 @@ export default class Node implements INode {
             let x2: number = Math.floor(this.right.chunk.x + this.right.chunk.w / 2);
             let y2: number = Math.floor(this.right.chunk.y + this.right.chunk.h / 2);
 
-            let w: number = (this.splitDirection == SplitDirection.VERTICAL) ? 1 : x2 - x1;
-            let h: number = (this.splitDirection == SplitDirection.VERTICAL) ? y2 - y1 : 1;
+            let w: number = (this.splitDirection == SplitDirection.VERTICAL) ? x2 - x1 : 1;
+            let h: number = (this.splitDirection == SplitDirection.VERTICAL) ? 1 : y2 - y1;
 
-            this.path = new Path(x1, y1, x2, y2, w, h);
+            this.paths.push(new Path(x1, y1, x2, y2, w, h));
 
             this.left.createPaths();
             this.right.createPaths();
@@ -239,11 +247,7 @@ export default class Node implements INode {
     }
 
     getPaths(): Path[] {
-        let pathArr: Path[] = [];
-
-        if (this.path != null) {
-            pathArr.push(this.path);
-        }
+        let pathArr: Path[] = this.paths;
 
         if (this.left != null && this.right != null) {
             pathArr = [ ...pathArr, ...this.left.getPaths(), ...this.right.getPaths() ];

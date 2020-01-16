@@ -13,11 +13,11 @@ const root: Node = new Node({
     h: canvas.height,
     minRatio: 0.8,
     maxRatio: 1.6,
-    minWidth: 20,
-    minHeight: 20
+    minWidth: 10,
+    minHeight: 10
 }, RNG);
 
-root.split(300);
+root.split(1);
 root.generateRooms();
 root.createPaths();
 
@@ -81,6 +81,6 @@ for (let i = 0; i < root.chunk.h; i++) {
     }
 }
 
-// ctx.strokeStyle = 'purple';
-// ctx.lineWidth = 1;
-// root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
+ctx.strokeStyle = 'purple';
+ctx.lineWidth = 1;
+root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
