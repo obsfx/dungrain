@@ -9,9 +9,12 @@ enum SplitDirection {
 const canvas: any = document.querySelector('.screen');
 const ctx: any = canvas.getContext('2d');
 
-interface INodeChunk {
+interface IPoint {
     x: number;
     y: number;
+}
+
+interface INodeChunk extends IPoint {
     w: number;
     h: number;
     minRatio: number;
@@ -33,7 +36,7 @@ interface INode {
     random(min: number, max: number): number;
     split(iterationCount: number, RNG: seedrandom.prng): void;
     generateRooms(): void;
-    constructPath(x1: number, y1: number, x2: number, y2: number): Path;
+    constructPath(a: IPoint, b: IPoint, direction: SplitDirection, pathWidh: number): Path;
     createPaths(chunkLeft: INodeChunk, chunkRight: INodeChunk): void;
     getChunks(): INodeChunk[];
     getRooms(): Room[];
@@ -171,17 +174,17 @@ export default class Node implements INode {
         // let h: number = Math.floor(RNG() * (this.chunk.h - 6 - (y - this.chunk.y) - this.chunk.h / 4)) + this.chunk.h / 4;
 
         if (!this.isSplit) {
-            // let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w / 6, this.chunk.w / 3));
-            // let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h / 6, this.chunk.h / 3));
+            let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w / 6, this.chunk.w / 3));
+            let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h / 6, this.chunk.h / 3));
 
-            let x: number = Math.floor(this.chunk.x);
-            let y: number = Math.floor(this.chunk.y);
+            // let x: number = Math.floor(this.chunk.x);
+            // let y: number = Math.floor(this.chunk.y + this.chunk.h - 10);
 
-            // let w: number = Math.floor(this.random(this.chunk.w / 3, this.chunk.w - (x - this.chunk.x)));
-            // let h: number = Math.floor(this.random(this.chunk.h / 3, this.chunk.h - (y - this.chunk.y)));
+            let w: number = Math.floor(this.random(this.chunk.w / 3, this.chunk.w - (x - this.chunk.x)));
+            let h: number = Math.floor(this.random(this.chunk.h / 3, this.chunk.h - (y - this.chunk.y)));
 
-            let w: number = 10;
-            let h: number = 10;
+            // let w: number = 10;
+            // let h: number = 10;
 
             this.room = new Room(x, y, w, h);
         }
@@ -195,27 +198,103 @@ export default class Node implements INode {
         }
     }
 
+    constructPath(a: IPoint, b: IPoint, direction: SplitDirection, pathWidh: number): Path {
+        let x1: number = Math.floor(a.x);
+        let y1: number = Math.floor(a.y);
+
+        let x2: number = Math.floor(b.x);
+        let y2: number = Math.floor(b.y);
+
+        let w: number = (direction == SplitDirection.VERTICAL) ? x2 - x1 : pathWidh;
+        let h: number = (direction == SplitDirection.VERTICAL) ? pathWidh : y2 - y1;
+
+        return new Path(x1, y1, x2, y2, w, h);
+    }
+
     createPaths(): void {
 
+        if (this.room != null) {
+            let chunkCenterX: number = Math.floor(this.chunk.x + this.chunk.w / 2);
+            let chunkCenterY: number = Math.floor(this.chunk.y + this.chunk.h / 2);
+
+            let roomCenterX: number = Math.floor(this.room.x + this.room.w / 2);
+            let roomCenterY: number = Math.floor(this.room.y + this.room.h / 2);
+
+            let pathPointA: IPoint = { x: 0, y: 0 };
+            let pathPointB: IPoint = { x: 0, y: 0 };
+
+            // if way -> disable this section
+
+            // if (roomCenterX < chunkCenterX) {
+            //     this.paths.push(
+            //         this.constructPath(
+            //         { x: roomCenterX, y: chunkCenterY },
+            //         { x: chunkCenterX + 1, y: chunkCenterY },
+            //         SplitDirection.VERTICAL,
+            //         1
+            //     ));
+            // }
+
+            // if (roomCenterX > chunkCenterX) {
+            //     this.paths.push(this.constructPath(
+            //         { x: chunkCenterX, y: chunkCenterY },
+            //         { x: roomCenterX, y: chunkCenterY },
+            //         SplitDirection.VERTICAL,
+            //         1
+            //     ));
+            // }
+
+            // if (roomCenterY < chunkCenterY) {
+            //     this.paths.push(this.constructPath(
+            //         { x: roomCenterX, y: roomCenterY },
+            //         { x: roomCenterX, y: chunkCenterY + 1 },
+            //         SplitDirection.HORIZONTAL,
+            //         1
+            //     ));
+            // }
+
+            // if (roomCenterY > chunkCenterY) {
+            //     this.paths.push(this.constructPath(
+            //         { x: roomCenterX, y: chunkCenterY },
+            //         { x: roomCenterX, y: roomCenterY },
+            //         SplitDirection.HORIZONTAL,
+            //         1
+            //     ));
+            // }
+        }
+
         if (this.left != null && this.right != null) {
-            ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.moveTo(this.left.chunk.x + this.left.chunk.w / 2 - 1, this.left.chunk.y + this.left.chunk.h / 2 - 1);
-            ctx.lineTo(this.right.chunk.x + this.right.chunk.w / 2 - 1, this.right.chunk.y + this.right.chunk.h / 2 - 1);
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.closePath();
+            // ctx.beginPath();
+            // ctx.strokeStyle = 'black';
+            // ctx.moveTo(this.left.chunk.x + this.left.chunk.w / 2 - 1, this.left.chunk.y + this.left.chunk.h / 2 - 1);
+            // ctx.lineTo(this.right.chunk.x + this.right.chunk.w / 2 - 1, this.right.chunk.y + this.right.chunk.h / 2 - 1);
+            // ctx.lineWidth = 2;
+            // ctx.stroke();
+            // ctx.closePath();
 
-            let x1: number = Math.floor(this.left.chunk.x + this.left.chunk.w / 2);
-            let y1: number = Math.floor(this.left.chunk.y + this.left.chunk.h / 2);
+            // let x1: number = Math.floor(this.left.chunk.x + this.left.chunk.w / 2);
+            // let y1: number = Math.floor(this.left.chunk.y + this.left.chunk.h / 2);
 
-            let x2: number = Math.floor(this.right.chunk.x + this.right.chunk.w / 2);
-            let y2: number = Math.floor(this.right.chunk.y + this.right.chunk.h / 2);
+            // let x2: number = Math.floor(this.right.chunk.x + this.right.chunk.w / 2);
+            // let y2: number = Math.floor(this.right.chunk.y + this.right.chunk.h / 2);
 
-            let w: number = (this.splitDirection == SplitDirection.VERTICAL) ? x2 - x1 : 1;
-            let h: number = (this.splitDirection == SplitDirection.VERTICAL) ? 1 : y2 - y1;
+            // let w: number = (this.splitDirection == SplitDirection.VERTICAL) ? x2 - x1 : 1;
+            // let h: number = (this.splitDirection == SplitDirection.VERTICAL) ? 1 : y2 - y1;
 
-            this.paths.push(new Path(x1, y1, x2, y2, w, h));
+            this.paths.push(this.constructPath(
+                {
+                    x: this.left.chunk.x + this.left.chunk.w / 2,
+                    y: this.left.chunk.y + this.left.chunk.h / 2,
+                },
+
+                {
+                    x: this.right.chunk.x + this.right.chunk.w / 2,
+                    y: this.right.chunk.y + this.right.chunk.h / 2,
+                },
+
+                this.splitDirection,
+                1
+            ));
 
             this.left.createPaths();
             this.right.createPaths();

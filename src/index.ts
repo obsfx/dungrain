@@ -17,7 +17,7 @@ const root: Node = new Node({
     minHeight: 10
 }, RNG);
 
-root.split(1);
+root.split(4);
 root.generateRooms();
 root.createPaths();
 
@@ -35,6 +35,10 @@ console.log(map);
 // console.log(root.getRooms());
 
 let a = root.getRooms();
+let b = root.getPaths();
+
+console.log(b, "vvvv");
+
 
 a.forEach(e => {
     for (let i = e.y; i < e.y + e.h; i++) {
@@ -44,9 +48,6 @@ a.forEach(e => {
     }
 })
 
-let b = root.getPaths();
-
-console.log(b, "vvvv");
 
 b.forEach(e => {
     for (let i = e.y1; i < e.y1 + e.h; i++) {
@@ -81,6 +82,6 @@ for (let i = 0; i < root.chunk.h; i++) {
     }
 }
 
-ctx.strokeStyle = 'purple';
-ctx.lineWidth = 1;
-root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
+// ctx.strokeStyle = 'purple';
+// ctx.lineWidth = 1;
+// root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
