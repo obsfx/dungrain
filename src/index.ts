@@ -1,7 +1,7 @@
 import seedrandom from 'seedrandom';
 import Node from './Node'
 
-const RNG = seedrandom('a');
+const RNG = seedrandom();
 
 const canvas: any = document.querySelector('.screen');
 const ctx: any = canvas.getContext('2d');
@@ -9,15 +9,15 @@ const ctx: any = canvas.getContext('2d');
 const root: Node = new Node({
     x: 0,
     y: 0,
-    w: canvas.width,
-    h: canvas.height,
+    w: 64,
+    h: 64,
     minRatio: 0.8,
     maxRatio: 1.6,
-    minWidth: 10,
-    minHeight: 10
+    minWidth: 15,
+    minHeight: 15
 }, RNG);
 
-root.split(10);
+root.split(6);
 root.generateRooms();
 root.createPaths();
 
@@ -98,21 +98,48 @@ a.forEach(e => {
 //     //     console.log(e.x + e.y * canvas.width);
 //     // });
 
+
+const putChar = (char: string, x: number ,y: number) => {
+    ctx.font = "12px Consolas";
+
+    let k = char;
+
+    ctx.fillText(k, x, y);
+}
+
+
+// console.log(ctx.measureText(k));
+
+// ctx.font = "16px Arial";
+// ctx.fillStyle = 'red'
+
 for (let i = 0; i < root.chunk.h; i++) {
     for (let j = 0; j < root.chunk.w; j++) { 
+        let x = j * 10;
+        let y = i * 10;
+
         if (map[i][j] == 0) {
             ctx.fillStyle = '#ddd';
+            // ctx.fillText('0', j, i);
+            putChar('0', x, y);
         } else if (map[i][j] == 1) {
             ctx.fillStyle = 'red';
+            // ctx.fillText('.', j, i);
+            putChar('.', x, y);
         } else if (map[i][j] == 2) {
             ctx.fillStyle = 'black';
+            // ctx.fillText('-', j, i);
+            putChar('-', x, y);
         } else if (map[i][j] == 3) {
             ctx.fillStyle = 'blue';
+            // ctx.fillText('#', j, i);
+            putChar('#', x, y);
         }
-        ctx.fillRect(j, i, 1, 1);
+
+        // ctx.fillRect(j, i, 1, 1);
     }
 }
 
-ctx.strokeStyle = 'purple';
-ctx.lineWidth = 1;
-root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
+// ctx.strokeStyle = 'purple';
+// ctx.lineWidth = 1;
+// root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
