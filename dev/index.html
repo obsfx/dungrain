@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+
+        <style>
+
+            @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,700&display=swap');
+
+            body {
+                background-color: #000;
+                font-family: 'IBM Plex Mono', monospace;
+            }
+            
+            canvas {
+                image-rendering: pixelated;
+                border: 2px solid purple;
+                left: 50%;
+                top: 50%;
+                position: absolute;
+                transform: translate(-50%, -50%);
+            }
+        </style>
+
+    </head>
+    <body>
+        <canvas width="500" height="500" class="screen"></canvas>
+        <script src="../src/index.ts"></script>
+    </body>
+</html>

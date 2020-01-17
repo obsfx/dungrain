@@ -19,11 +19,5 @@ export default class Room implements IRoom {
         this.y = y;
         this.w = w;
         this.h = h;
-
-        // ctx.fillStyle = 'red';
-        // ctx.fillRect(x, y, w, h);
-
-        // ctx.strokeStyle = 'blue';
-        // ctx.strokeRect(x, y, w, h);
     }
 }

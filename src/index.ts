@@ -1,28 +1,26 @@
 import seedrandom from 'seedrandom';
 import Node from './Node'
+import Room from './Room';
+import Path from './Path';
+import Visualization from './Visulization';
+
+const canvas: HTMLCanvasElement = document.querySelector('.screen') || new HTMLCanvasElement();
+const ctx: CanvasRenderingContext2D = canvas.getContext('2d') || new CanvasRenderingContext2D();
 
 const RNG = seedrandom();
-
-const canvas: any = document.querySelector('.screen');
-const ctx: any = canvas.getContext('2d');
 
 const root: Node = new Node({
     x: 0,
     y: 0,
-    w: 64,
-    h: 64,
-    minRatio: 0.8,
-    maxRatio: 1.6,
+    w: 50,
+    h: 50,
+    minRatio: 0.5,
+    maxRatio: 2,
     minWidth: 15,
     minHeight: 15
 }, RNG);
 
-root.split(6);
-root.generateRooms();
-root.createPaths();
-
 let map: number[][] = [];
-
 for (let i = 0; i < root.chunk.h; i++) {
     map.push([]);
     for (let j = 0; j < root.chunk.w; j++) { 
@@ -30,116 +28,84 @@ for (let i = 0; i < root.chunk.h; i++) {
     }
 }
 
-console.log(map);
-// console.log(root, root.getChunks());
-// console.log(root.getRooms());
+root.split(8);
+root.generateRooms();
+root.createPaths();
 
-let a = root.getRooms();
-let b = root.getPaths();
+const rooms: Room[] = root.getRooms();
+const paths: Path[] = root.getPaths();
 
-console.log(b, "vvvv");
-
-a.forEach(e => {
-    let yStart = (e.h > 2) ? e.y : e.y - 1;
-    let yTarget = (e.h > 2) ? e.y + e.h : e.y + e.h + 1;
-
-    let xStart = (e.w > 2) ? e.x : e.x - 1;
-    let xTarget = (e.w > 2) ? e.x + e.w : e.x + e.w + 1;
+const placeWalls = () => {
+    rooms.forEach(room => {
+        let yStart = (room.h > 2) ? room.y : room.y - 1;
+        let yTarget = (room.h > 2) ? room.y + room.h : room.y + room.h + 1;
     
-    for (let i = yStart; i < yTarget; i++) {
-        for (let j = xStart; j < xTarget; j++) { 
-
-            if (i > -1 && i < root.chunk.h && j > -1 && j < root.chunk.w) {
+        let xStart = (room.w > 2) ? room.x : room.x - 1;
+        let xTarget = (room.w > 2) ? room.x + room.w : room.x + room.w + 1;
+        
+        for (let i = yStart; i < yTarget; i++) {
+            for (let j = xStart; j < xTarget; j++) { 
+    
+                if (i > -1 && i < root.chunk.h && j > -1 && j < root.chunk.w) {
+                    map[i][j] = 3;
+                }
+            }
+        }
+    });
+    
+    paths.forEach(path => {
+        for (let i = path.y1 - 1; i < path.y1 + path.h + 1; i++) {
+            for (let j = path.x1 - 1; j < path.x1 + path.w + 1; j++) { 
                 map[i][j] = 3;
             }
         }
-    }
-})
-
-b.forEach(e => {
-    for (let i = e.y1 - 1; i < e.y1 + e.h + 1; i++) {
-        for (let j = e.x1 - 1; j < e.x1 + e.w + 1; j++) { 
-            map[i][j] = 3;
-        }
-    }
-})
-
-b.forEach(e => {
-    for (let i = e.y1; i < e.y1 + e.h; i++) {
-        for (let j = e.x1; j < e.x1 + e.w; j++) { 
-            map[i][j] = 2;
-        }
-    }
-})
-
-a.forEach(e => {
-    let yStart = (e.h > 2) ? e.y + 1 : e.y;
-    let yTarget = (e.h > 2) ? e.y + e.h - 1 : e.y + e.h;
-
-    let xStart = (e.w > 2) ? e.x + 1: e.x;
-    let xTarget = (e.w > 2) ? e.x + e.w - 1 : e.x + e.w;
-
-    for (let i = yStart; i < yTarget; i++) {
-        for (let j = xStart; j < xTarget; j++) { 
-            map[i][j] = 1;
-        }
-    }
-})
-
-// let b = a.sort((a, b) => (a.x + a.y * canvas.width) - (b.x + b.y * canvas.width));
-
-// root.getRooms()
-//     .sort((a, b) => (a.x + a.y * canvas.width) - (b.x + b.y * canvas.width))
-//     .forEach(e => {
-//         console.log(e.x + e.y * canvas.width, e);
-//     });
-
-//     // .forEach(e => {
-//     //     console.log(e.x + e.y * canvas.width);
-//     // });
-
-
-const putChar = (char: string, x: number ,y: number) => {
-    ctx.font = "12px Consolas";
-
-    let k = char;
-
-    ctx.fillText(k, x, y);
+    });
 }
 
-
-// console.log(ctx.measureText(k));
-
-// ctx.font = "16px Arial";
-// ctx.fillStyle = 'red'
-
-for (let i = 0; i < root.chunk.h; i++) {
-    for (let j = 0; j < root.chunk.w; j++) { 
-        let x = j * 10;
-        let y = i * 10;
-
-        if (map[i][j] == 0) {
-            ctx.fillStyle = '#ddd';
-            // ctx.fillText('0', j, i);
-            putChar('0', x, y);
-        } else if (map[i][j] == 1) {
-            ctx.fillStyle = 'red';
-            // ctx.fillText('.', j, i);
-            putChar('.', x, y);
-        } else if (map[i][j] == 2) {
-            ctx.fillStyle = 'black';
-            // ctx.fillText('-', j, i);
-            putChar('-', x, y);
-        } else if (map[i][j] == 3) {
-            ctx.fillStyle = 'blue';
-            // ctx.fillText('#', j, i);
-            putChar('#', x, y);
+const placePaths = () => {
+    paths.forEach(path => {
+        for (let i = path.y1; i < path.y1 + path.h; i++) {
+            for (let j = path.x1; j < path.x1 + path.w; j++) { 
+                map[i][j] = 2;
+            }
         }
-
-        // ctx.fillRect(j, i, 1, 1);
-    }
+    });
 }
 
-// ctx.strokeStyle = 'purple';
-// ctx.lineWidth = 1;
-// root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
+const placeRooms = () => {
+    rooms.forEach(room => {
+        let yStart = (room.h > 2) ? room.y + 1 : room.y;
+        let yTarget = (room.h > 2) ? room.y + room.h - 1 : room.y + room.h;
+    
+        let xStart = (room.w > 2) ? room.x + 1: room.x;
+        let xTarget = (room.w > 2) ? room.x + room.w - 1 : room.x + room.w;
+    
+        for (let i = yStart; i < yTarget; i++) {
+            for (let j = xStart; j < xTarget; j++) { 
+                map[i][j] = 1;
+            }
+        }
+    });
+}
+
+placeWalls();
+placePaths();
+placeRooms();
+
+let v = new Visualization(root, map, canvas, ctx, {
+    wall: '#0BF8F1',
+    asciiPath: 'orange',
+    prePath: 'green',
+    asciiRoom: '#4eff3c',
+    preRoom: 'red',
+    chunkLine: 'purple'
+})
+
+const loop = () => {
+    v.tick(5);
+    requestAnimationFrame(loop);
+};
+
+ctx.fillStyle = 'black';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+loop();
