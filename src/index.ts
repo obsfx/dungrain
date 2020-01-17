@@ -17,7 +17,7 @@ const root: Node = new Node({
     minHeight: 10
 }, RNG);
 
-root.split(4);
+root.split(5);
 root.generateRooms();
 root.createPaths();
 

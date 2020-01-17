@@ -174,14 +174,14 @@ export default class Node implements INode {
         // let h: number = Math.floor(RNG() * (this.chunk.h - 6 - (y - this.chunk.y) - this.chunk.h / 4)) + this.chunk.h / 4;
 
         if (!this.isSplit) {
-            let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w / 6, this.chunk.w / 3));
-            let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h / 6, this.chunk.h / 3));
+            let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w * 0.2, this.chunk.w * 0.3));
+            let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h * 0.2, this.chunk.h * 0.3));
 
             // let x: number = Math.floor(this.chunk.x);
             // let y: number = Math.floor(this.chunk.y + this.chunk.h - 10);
 
-            let w: number = Math.floor(this.random(this.chunk.w / 3, this.chunk.w - (x - this.chunk.x)));
-            let h: number = Math.floor(this.random(this.chunk.h / 3, this.chunk.h - (y - this.chunk.y)));
+            let w: number = Math.floor(this.random(this.chunk.w * 0.5, this.chunk.w * 0.65));
+            let h: number = Math.floor(this.random(this.chunk.h * 0.5, this.chunk.h * 0.65));
 
             // let w: number = 10;
             // let h: number = 10;
