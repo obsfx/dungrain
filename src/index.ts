@@ -17,7 +17,7 @@ const root: Node = new Node({
     minHeight: 10
 }, RNG);
 
-root.split(5);
+root.split(10);
 root.generateRooms();
 root.createPaths();
 
@@ -39,20 +39,49 @@ let b = root.getPaths();
 
 console.log(b, "vvvv");
 
-
 a.forEach(e => {
-    for (let i = e.y; i < e.y + e.h; i++) {
-        for (let j = e.x; j < e.x + e.w; j++) { 
-            map[i][j] = 1;
+    let yStart = (e.h > 2) ? e.y : e.y - 1;
+    let yTarget = (e.h > 2) ? e.y + e.h : e.y + e.h + 1;
+
+    let xStart = (e.w > 2) ? e.x : e.x - 1;
+    let xTarget = (e.w > 2) ? e.x + e.w : e.x + e.w + 1;
+    
+    for (let i = yStart; i < yTarget; i++) {
+        for (let j = xStart; j < xTarget; j++) { 
+
+            if (i > -1 && i < root.chunk.h && j > -1 && j < root.chunk.w) {
+                map[i][j] = 3;
+            }
         }
     }
 })
 
+b.forEach(e => {
+    for (let i = e.y1 - 1; i < e.y1 + e.h + 1; i++) {
+        for (let j = e.x1 - 1; j < e.x1 + e.w + 1; j++) { 
+            map[i][j] = 3;
+        }
+    }
+})
 
 b.forEach(e => {
     for (let i = e.y1; i < e.y1 + e.h; i++) {
         for (let j = e.x1; j < e.x1 + e.w; j++) { 
             map[i][j] = 2;
+        }
+    }
+})
+
+a.forEach(e => {
+    let yStart = (e.h > 2) ? e.y + 1 : e.y;
+    let yTarget = (e.h > 2) ? e.y + e.h - 1 : e.y + e.h;
+
+    let xStart = (e.w > 2) ? e.x + 1: e.x;
+    let xTarget = (e.w > 2) ? e.x + e.w - 1 : e.x + e.w;
+
+    for (let i = yStart; i < yTarget; i++) {
+        for (let j = xStart; j < xTarget; j++) { 
+            map[i][j] = 1;
         }
     }
 })
@@ -77,11 +106,13 @@ for (let i = 0; i < root.chunk.h; i++) {
             ctx.fillStyle = 'red';
         } else if (map[i][j] == 2) {
             ctx.fillStyle = 'black';
+        } else if (map[i][j] == 3) {
+            ctx.fillStyle = 'blue';
         }
         ctx.fillRect(j, i, 1, 1);
     }
 }
 
-// ctx.strokeStyle = 'purple';
-// ctx.lineWidth = 1;
-// root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));
+ctx.strokeStyle = 'purple';
+ctx.lineWidth = 1;
+root.getChunks().forEach(e => ctx.strokeRect(e.x, e.y, e.w, e.h));

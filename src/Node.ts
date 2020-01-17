@@ -214,14 +214,14 @@ export default class Node implements INode {
     createPaths(): void {
 
         if (this.room != null) {
-            let chunkCenterX: number = Math.floor(this.chunk.x + this.chunk.w / 2);
-            let chunkCenterY: number = Math.floor(this.chunk.y + this.chunk.h / 2);
+            // let chunkCenterX: number = Math.floor(this.chunk.x + this.chunk.w / 2);
+            // let chunkCenterY: number = Math.floor(this.chunk.y + this.chunk.h / 2);
 
-            let roomCenterX: number = Math.floor(this.room.x + this.room.w / 2);
-            let roomCenterY: number = Math.floor(this.room.y + this.room.h / 2);
+            // let roomCenterX: number = Math.floor(this.room.x + this.room.w / 2);
+            // let roomCenterY: number = Math.floor(this.room.y + this.room.h / 2);
 
-            let pathPointA: IPoint = { x: 0, y: 0 };
-            let pathPointB: IPoint = { x: 0, y: 0 };
+            // let pathPointA: IPoint = { x: 0, y: 0 };
+            // let pathPointB: IPoint = { x: 0, y: 0 };
 
             // if way -> disable this section
 
