@@ -210,7 +210,7 @@ export default class Visualization implements IVisualization {
                     this.drawChunkLines();
                     this.asciiLineCounter++;
                 } else {
-                    ctx.fillStyle = '#031011';
+                    ctx.fillStyle = this.colors.bg;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
                     for (let i: number = 0; i < map.length; i++) {
@@ -232,14 +232,9 @@ export default class Visualization implements IVisualization {
                 if (this.mobCounter < this.mobs.length) {
                     let mob = this.mobs[this.mobCounter];
 
-                    ctx.fillStyle = '#031011';
+                    ctx.fillStyle = this.colors.bg;
                     this.ctx.fillRect(mob.x * this.scaleX, mob.y * this.scaleY, this.scaleX, this.scaleY);
 
-                    // this.putChar(
-                    //     mob.char, 
-                    //     mob.x * this.scaleX, 
-                    //     mob.y * this.scaleY
-                    // );
                     this.ctx.fillText(mob.char, 
                         -this.ctx.measureText(mob.char).width / 4 + mob.x * this.scaleX, 
                         this.ctx.measureText(mob.char).actualBoundingBoxAscent / 2 + mob.y * this.scaleY
