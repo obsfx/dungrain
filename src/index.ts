@@ -1,4 +1,4 @@
-import seedrandom from 'seedrandom';
+// import seedrandom from 'seedrandom';
 import Node from './Node'
 import Room from './Room';
 import Path from './Path';
@@ -7,17 +7,17 @@ import Visualization from './Visulization';
 const canvas: HTMLCanvasElement = document.querySelector('.screen') || new HTMLCanvasElement();
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d') || new CanvasRenderingContext2D();
 
-const RNG = seedrandom('<');
+const RNG = Math.random
 
 const root: Node = new Node({
     x: 0,
     y: 0,
-    w: 100,
+    w: 60,
     h: 60,
     minRatio: 0.8,
     maxRatio: 1.6,
-    minWidth: 12,
-    minHeight: 12,
+    minWidth: 10,
+    minHeight: 10,
 }, RNG);
 
 let map: number[][] = [];
@@ -114,15 +114,30 @@ placeWalls();
 placePaths();
 placeRooms();
 
-let v = new Visualization(root, map, canvas, ctx, {
-    wall: '#0BF8F1',
-    asciiPath: 'orange',
-    prePath: '#A0FFFF',
-    asciiRoom: '#4eff3c',
-    preRoom: '#FF3CFF',
-    chunkLine: '#394244',
-    bg: '#031011'
-})
+let v = new Visualization(root, map, canvas, ctx, 
+    "bold 10px 'IBM Plex Mono', monospace",
+    80,
+    ["🍎", "🌟", "👻", "👽", "🤡", "🤬", "👀", "🧠", "🔥", "🥩", "🍺"],
+    {
+        wall: 3,
+        path: 2,
+        room: 1
+    },
+    {
+        wall: '#',
+        path: '*',
+        room: '.'
+    },
+    {
+        wall: '#0BF8F1',
+        asciiPath: 'orange',
+        prePath: '#A0FFFF',
+        asciiRoom: '#4eff3c',
+        preRoom: '#FF3CFF',
+        chunkLine: '#394244',
+        bg: '#031011'
+    }
+)
 
 const loop = () => {
     v.tick(1);

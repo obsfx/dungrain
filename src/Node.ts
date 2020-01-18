@@ -28,7 +28,8 @@ interface INode {
     paths: Path[] | null;
     splitDirection: SplitDirection;
     isSplit: boolean;
-    RNG: seedrandom.prng;
+    // RNG: seedrandom.prng;
+    RNG: Function
 
     random(min: number, max: number): number;
     split(iterationCount: number, RNG: seedrandom.prng): void;
@@ -48,9 +49,10 @@ export default class Node implements INode {
     splitDirection: SplitDirection;
     paths: Path[];
     isSplit: boolean;
-    RNG: seedrandom.prng;
+    // RNG: seedrandom.prng;
+    RNG: Function
 
-    constructor(chunk: INodeChunk, RNG: seedrandom.prng) {
+    constructor(chunk: INodeChunk, RNG: Function) {
         this.chunk = chunk;
         this.left = null;
         this.right = null;

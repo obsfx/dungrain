@@ -7,6 +7,20 @@ interface IVisualization {
     map: number[][];
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    font: string;
+    mobCount: number;
+    mobChars: string[];
+    index: {
+        wall: number;
+        path: number;
+        room: number;
+    };
+
+    chars: {
+        wall: string;
+        path: string;
+        room: string;
+    };
     colors: {
         wall: string;
         asciiPath: string;
@@ -22,10 +36,31 @@ interface IVisualization {
     pathCounter: number;
     roomCounter: number;
     asciiLineCounter: number;
+    mobCounter: number;
 
     scaleX: number;
     scaleY: number;
 
+    mobs: { x: number, y: number, char: string }[];
+
+    steps: Function[];
+
+    putChar(char: string, x: number, y: number): void;
+    getFloors(): { x: number, y: number }[];
+    getMobs(): { x: number, y: number, char: string }[];
+    drawChunkLines(): void;
+    drawAscii(tile: number, x: number, y: number): void;
+    tick(animDelay: number): void;
+}
+
+export default class Visualization implements IVisualization {
+    root: Node;
+    map: number[][];
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    font: string;
+    mobCount: number;
+    mobChars: string[];
     index: {
         wall: number;
         path: number;
@@ -37,20 +72,6 @@ interface IVisualization {
         path: string;
         room: string;
     };
-
-    steps: Function[];
-
-    putChar(char: string, x: number, y: number): void;
-    drawChunkLines(): void;
-    drawAscii(tile: number, x: number, y: number): void;
-    tick(animDelay: number): void;
-}
-
-export default class Visualization implements IVisualization {
-    root: Node;
-    map: number[][];
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
     colors: {
         wall: string;
         asciiPath: string;
@@ -69,21 +90,12 @@ export default class Visualization implements IVisualization {
     pathCounter: number;
     roomCounter: number;
     asciiLineCounter: number;
+    mobCounter: number;
 
     scaleX: number;
     scaleY: number;
 
-    index: {
-        wall: number;
-        path: number;
-        room: number;
-    };
-
-    chars: {
-        wall: string;
-        path: string;
-        room: string; 
-    };
+    mobs: { x: number, y: number, char: string }[];
 
     steps: Function[];
 
@@ -92,6 +104,20 @@ export default class Visualization implements IVisualization {
         map: number[][], 
         canvas: HTMLCanvasElement,
         ctx: CanvasRenderingContext2D,
+        font: string,
+        mobCount: number,
+        mobChars: string[],
+        index: {
+            wall: number;
+            path: number;
+            room: number;
+        },
+
+        chars: {
+            wall: string;
+            path: string;
+            room: string;
+        },
         colors: {
             wall: string,
             asciiPath: string,
@@ -106,13 +132,21 @@ export default class Visualization implements IVisualization {
         this.map = map;
         this.canvas = canvas;
         this.ctx = ctx;
+        this.font = font;
+        this.mobCount = mobCount;
+        this.mobChars = mobChars;
+        this.index = index;
+        this.chars = chars;
         this.colors = colors;
+
+        this.ctx.font = this.font;
 
         this.frameCounter = 0;
         this.stepCounter = 0;
         this.pathCounter = 0;
         this.roomCounter = 0;
         this.asciiLineCounter = 0;
+        this.mobCounter = 0;
 
         this.paths = this.root.getPaths();
         this.rooms = this.root.getRooms();
@@ -120,17 +154,7 @@ export default class Visualization implements IVisualization {
         this.scaleX = this.canvas.width / this.root.chunk.w;
         this.scaleY = this.canvas.height / this.root.chunk.h;
 
-        this.index = {
-            wall: 3,
-            path: 2,
-            room: 1
-        }
-
-        this.chars = {
-            wall: '#',
-            path: '*',
-            room: '.'
-        }
+        this.mobs = this.getMobs();
 
         this.steps = [    
             () => {
@@ -174,7 +198,8 @@ export default class Visualization implements IVisualization {
             () => {
                 if (this.asciiLineCounter < this.root.chunk.h) {
                     let y: number = this.asciiLineCounter * this.scaleY;
-    
+                    this.ctx.clearRect(0, y, this.canvas.width, this.scaleY);
+
                     for (let i: number = 0; i < map[this.asciiLineCounter].length; i++) {
                         let x: number = i * this.scaleX;
                         let tile: number = map[this.asciiLineCounter][i];
@@ -188,7 +213,7 @@ export default class Visualization implements IVisualization {
                     ctx.fillStyle = '#031011';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-                    for (let i:number = 0; i < map.length; i++) {
+                    for (let i: number = 0; i < map.length; i++) {
                         let y: number = i * this.scaleY;
 
                         for (let j: number = 0; j < map[i].length; j++) {
@@ -201,14 +226,68 @@ export default class Visualization implements IVisualization {
     
                     this.stepCounter++;
                 }
+            },
+
+            () => {
+                if (this.mobCounter < this.mobs.length) {
+                    let mob = this.mobs[this.mobCounter];
+
+                    ctx.fillStyle = '#031011';
+                    this.ctx.fillRect(mob.x * this.scaleX, mob.y * this.scaleY, this.scaleX, this.scaleY);
+
+                    // this.putChar(
+                    //     mob.char, 
+                    //     mob.x * this.scaleX, 
+                    //     mob.y * this.scaleY
+                    // );
+                    this.ctx.fillText(mob.char, 
+                        -this.ctx.measureText(mob.char).width / 4 + mob.x * this.scaleX, 
+                        this.ctx.measureText(mob.char).actualBoundingBoxAscent / 2 + mob.y * this.scaleY
+                    );
+                    this.mobCounter++;
+                } else {
+                    this.stepCounter++;
+                }
             }
         ]
     }
 
     putChar(char: string, x: number, y: number): void {
-        this.ctx.font = "bold 10px 'IBM Plex Mono', monospace";
-        this.ctx.clearRect(x, y, this.scaleX, this.scaleY);
         this.ctx.fillText(char, x, y + this.ctx.measureText(char).actualBoundingBoxAscent);
+    }
+
+    getFloors(): { x: number, y: number }[] {
+        let floors: { x: number, y: number }[] = [];
+
+        for (let i: number = 0; i < this.map.length; i++) {
+            for (let j: number = 0; j < this.map[i].length; j++) {
+                if ([this.index.room, this.index.path].indexOf(this.map[i][j]) > -1) {
+                    floors.push({
+                        x: j,
+                        y: i
+                    });
+                }
+            }
+        }
+
+        return floors;
+    }
+
+    getMobs(): { x: number, y: number, char: string }[] {
+        let mobs: { x: number, y: number, char: string }[] = [];
+        let floors: { x: number, y: number }[] = this.getFloors();
+        for (let i: number = 0; i < this.mobCount; i++) {
+            if (floors.length > 0) {
+                let floor: { x: number, y: number } = floors.splice(Math.floor(Math.random() * floors.length), 1)[0];
+                mobs.push({
+                    x: floor.x,
+                    y: floor.y,
+                    char: this.mobChars[Math.floor(Math.random() * this.mobChars.length)]
+                });
+            }
+        }
+
+        return mobs;
     }
 
     drawChunkLines():void {
