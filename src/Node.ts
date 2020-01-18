@@ -140,11 +140,11 @@ export default class Node implements INode {
     generateRooms(): void {
 
         if (!this.isSplit) {
-            let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w * 0.2, this.chunk.w * 0.3));
-            let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h * 0.2, this.chunk.h * 0.3));
+            let x: number = Math.floor(this.chunk.x + this.random(this.chunk.w * 0.2, this.chunk.w * 0.25));
+            let y: number = Math.floor(this.chunk.y + this.random(this.chunk.h * 0.2, this.chunk.h * 0.25));
 
-            let w: number = Math.floor(this.random(this.chunk.w * 0.5, this.chunk.w * 0.65));
-            let h: number = Math.floor(this.random(this.chunk.h * 0.5, this.chunk.h * 0.65));
+            let w: number = Math.floor(this.random(this.chunk.w * 0.6, this.chunk.w * 0.7));
+            let h: number = Math.floor(this.random(this.chunk.h * 0.6, this.chunk.h * 0.7));
 
             this.room = new Room(x, y, w, h);
         }
@@ -176,13 +176,13 @@ export default class Node implements INode {
         if (this.left != null && this.right != null) {
             this.paths.push(this.constructPath(
                 {
-                    x: this.left.chunk.x + this.left.chunk.w / 2,
-                    y: this.left.chunk.y + this.left.chunk.h / 2,
+                    x: this.left.chunk.x + this.left.chunk.w / 4,
+                    y: this.left.chunk.y + this.left.chunk.h / 4,
                 },
 
                 {
-                    x: this.right.chunk.x + this.right.chunk.w / 2,
-                    y: this.right.chunk.y + this.right.chunk.h / 2,
+                    x: this.right.chunk.x + this.right.chunk.w / 1.5,
+                    y: this.right.chunk.y + this.right.chunk.h / 1.5,
                 },
 
                 this.splitDirection,

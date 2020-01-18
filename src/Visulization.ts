@@ -8,12 +8,13 @@ interface IVisualization {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     colors: {
-        wall: string,
-        asciiPath: string,
-        prePath: string,
-        asciiRoom: string,
-        preRoom: string,
-        chunkLine: string
+        wall: string;
+        asciiPath: string;
+        prePath: string;
+        asciiRoom: string;
+        preRoom: string;
+        chunkLine: string;
+        bg: string;
     };
 
     frameCounter: number;
@@ -26,15 +27,15 @@ interface IVisualization {
     scaleY: number;
 
     index: {
-        wall: number,
-        path: number,
-        room: number
+        wall: number;
+        path: number;
+        room: number;
     };
 
     chars: {
-        wall: string,
-        path: string,
-        room: string
+        wall: string;
+        path: string;
+        room: string;
     };
 
     steps: Function[];
@@ -51,12 +52,13 @@ export default class Visualization implements IVisualization {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     colors: {
-        wall: string,
-        asciiPath: string,
-        prePath: string,
-        asciiRoom: string,
-        preRoom: string,
-        chunkLine: string
+        wall: string;
+        asciiPath: string;
+        prePath: string;
+        asciiRoom: string;
+        preRoom: string;
+        chunkLine: string;
+        bg: string;
     };
 
     paths: Path[];
@@ -72,15 +74,15 @@ export default class Visualization implements IVisualization {
     scaleY: number;
 
     index: {
-        wall: number,
-        path: number,
-        room: number
+        wall: number;
+        path: number;
+        room: number;
     };
 
     chars: {
-        wall: string,
-        path: string,
-        room: string
+        wall: string;
+        path: string;
+        room: string; 
     };
 
     steps: Function[];
@@ -96,7 +98,8 @@ export default class Visualization implements IVisualization {
             prePath: string,
             asciiRoom: string,
             preRoom: string,
-            chunkLine: string
+            chunkLine: string,
+            bg: string
         }
     ) {
         this.root = root;
@@ -133,7 +136,7 @@ export default class Visualization implements IVisualization {
             () => {
                 if (this.pathCounter <= this.paths.length) {
                     for (let i: number = 0; i < this.pathCounter; i++) {
-                        ctx.fillStyle = 'green';
+                        ctx.fillStyle = this.colors.prePath;
                         ctx.fillRect(
                             this.paths[i].x1 * this.scaleX, 
                             this.paths[i].y1 * this.scaleY, 
@@ -152,7 +155,7 @@ export default class Visualization implements IVisualization {
             () => {
                 if (this.roomCounter <= this.rooms.length) {
                     for (let i: number = 0; i < this.roomCounter; i++) {
-                        ctx.fillStyle = 'red';
+                        ctx.fillStyle = this.colors.preRoom;
                         ctx.fillRect(
                             this.rooms[i].x * this.scaleX, 
                             this.rooms[i].y * this.scaleY, 
@@ -169,7 +172,7 @@ export default class Visualization implements IVisualization {
             },
     
             () => {
-                if (this.asciiLineCounter < root.chunk.h) {
+                if (this.asciiLineCounter < this.root.chunk.h) {
                     let y: number = this.asciiLineCounter * this.scaleY;
     
                     for (let i: number = 0; i < map[this.asciiLineCounter].length; i++) {
@@ -182,7 +185,7 @@ export default class Visualization implements IVisualization {
                     this.drawChunkLines();
                     this.asciiLineCounter++;
                 } else {
-                    ctx.fillStyle = 'black';
+                    ctx.fillStyle = '#031011';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
                     for (let i:number = 0; i < map.length; i++) {
@@ -205,7 +208,7 @@ export default class Visualization implements IVisualization {
     putChar(char: string, x: number, y: number): void {
         this.ctx.font = "bold 10px 'IBM Plex Mono', monospace";
         this.ctx.clearRect(x, y, this.scaleX, this.scaleY);
-        this.ctx.fillText(char, x, y);
+        this.ctx.fillText(char, x, y + this.ctx.measureText(char).actualBoundingBoxAscent);
     }
 
     drawChunkLines():void {
