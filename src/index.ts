@@ -169,11 +169,11 @@ const inputs: {
 }
 
 const states: string[] = [
-    'placing corridors...',
-    'placing rooms...',
-    'placing walls & some polishing...',
-    'some creatures would be good...',
-    'done'
+    '🌘 placing corridors...',
+    '🌗 placing rooms...',
+    '🌕 placing walls & some polishing...',
+    '👻 some creatures would be cool...',
+    '🎉 done'
 ];
 
 const statusInfo: HTMLElement = document.querySelector('.status') || new HTMLElement();
