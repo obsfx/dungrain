@@ -171,7 +171,7 @@ const inputs: {
 const states: string[] = [
     'placing corridors...',
     'placing rooms...',
-    'polishing...',
+    'placing walls & some polishing...',
     'some creatures would be good...',
     'done'
 ];
