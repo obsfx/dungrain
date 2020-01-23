@@ -1,7 +1,23 @@
 export namespace Interfaces {
+    export interface Point {
+        x: number;
+        y: number;
+    }
+    
+    export interface Floor extends Point {
+        type: number;
+    }
+
     export interface Room {
         topLeftCorner: Point;
         floors: Point[];
+    }
+
+    export interface Path {
+        startPoint: Point;
+        floors: Point[];
+        direction: Direction;
+        width: number;
     }
 
     export interface RoomChunk {
@@ -11,7 +27,7 @@ export namespace Interfaces {
         h: number;
     }
 
-    export interface Path {
+    export interface PathChunk {
         x1: number;
         y1: number;
         x2: number;
@@ -20,16 +36,11 @@ export namespace Interfaces {
         h: number;
     }
 
-    export enum SplitDirection {
+    export enum Direction {
         VERTICAL,
         HORIZONTAL
-    }
-    
-    export interface Point {
-        x: number;
-        y: number;
-    }
-    
+	}
+	
     export interface NodeChunk extends Point {
         w: number;
         h: number;
@@ -44,23 +55,24 @@ export namespace Interfaces {
         left: Node | null;
         right: Node | null;
         roomChunk: RoomChunk | null;
-        paths: Path[] | null;
-        splitDirection: SplitDirection;
+		pathChunks: PathChunk[];
+		pathWidth: number;
+        Direction: Direction;
         isSplit: boolean;
         RNG: seedrandom.prng;
     
         random(min: number, max: number): number;
         split(iterationCount: number): void;
         generateRoomChunks(): void;
-        constructPath(a: Point, b: Point, direction: SplitDirection, pathWidh: number): Path;
-        createPaths(): void;
+        constructPathChunks(a: Point, b: Point, direction: Direction, pathWidth: number): PathChunk;
+        createPathChunks(): void;
         getChunks(): NodeChunk[];
         getRoomChunks(): RoomChunk[];
-        getPaths(): Path[];
+        getPathChunks(): PathChunk[];
     }
 
     export interface Main {
-        seed: string | undefined;
+        seed: string;
         column: number;
         row: number;
         minimumWHRatio: number;
@@ -68,21 +80,32 @@ export namespace Interfaces {
         minimumChunkWidth: number;
         minimumChunkHeight: number;
         indexMap: {
-            WALL: number,
+            Wall: number,
             Path: number,
-            Room: number
+            Room: number,
+            Empty: number
         };
-
+		
         RNG: seedrandom.prng;
         arrayMap: number[][];
         root: Node;
+        allFloors: Floor[];
         roomChunks: RoomChunk[];
-        Paths: Path[];
+        pathChunks: PathChunk[];
+        rooms: Room[];
+        paths: Path[];
+
+        createEmptyArrayMap(col: number, row: number): number[][];
 
         placeWalls(): void;
         placePaths(): void;
-        placeRoomChunks(): void;
+        placeRooms(): void;
 
         constructArrayMap(): void;
+
+        getRooms(): Room[];
+        getPaths(): Path[];
+        getAllFloors(): Floor[];
+        getMap(): number[][];
     }
 }

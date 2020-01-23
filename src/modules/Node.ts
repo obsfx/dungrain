@@ -1,6 +1,6 @@
 import { Interfaces } from '../interfaces.namespace';
 
-import Path from './Path';
+import PathChunk from './PathChunk';
 import RoomChunk from './RoomChunk';
 
 export default class Node implements Interfaces.Node {
@@ -8,8 +8,9 @@ export default class Node implements Interfaces.Node {
     left: Interfaces.Node | null;
     right: Interfaces.Node | null;
     roomChunk: RoomChunk | null;
-    splitDirection: Interfaces.SplitDirection;
-    paths: Path[];
+    pathChunks: PathChunk[];
+    pathWidth: number;
+    Direction: Interfaces.Direction;
     isSplit: boolean;
     RNG: seedrandom.prng;
 
@@ -18,8 +19,9 @@ export default class Node implements Interfaces.Node {
         this.left = null;
         this.right = null;
         this.roomChunk = null;
-        this.paths = [];
-        this.splitDirection = Interfaces.SplitDirection.VERTICAL;
+        this.pathChunks = [];
+        this.pathWidth = 1;
+        this.Direction = Interfaces.Direction.VERTICAL;
         this.isSplit = false;
         this.RNG = RNG;
     }
@@ -31,19 +33,19 @@ export default class Node implements Interfaces.Node {
     split(iterationCount: number): void {
         this.isSplit = true;
 
-        this.splitDirection = (this.RNG() > 0.5) ? 
-        Interfaces.SplitDirection.VERTICAL : 
-        Interfaces.SplitDirection.HORIZONTAL;
+        this.Direction = (this.RNG() > 0.5) ? 
+        Interfaces.Direction.VERTICAL : 
+        Interfaces.Direction.HORIZONTAL;
 
         let ratio: number = this.chunk.w / this.chunk.h;
 
         if (ratio <= this.chunk.minRatio) {
-            this.splitDirection = Interfaces.SplitDirection.HORIZONTAL;
+            this.Direction = Interfaces.Direction.HORIZONTAL;
         } else if (ratio >= this.chunk.maxRatio) {
-            this.splitDirection = Interfaces.SplitDirection.VERTICAL;
+            this.Direction = Interfaces.Direction.VERTICAL;
         }
 
-        let shiftOffset: number = (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+        let shiftOffset: number = (this.Direction == Interfaces.Direction.VERTICAL) ? 
         this.random(-this.chunk.w / 4, this.chunk.w / 4) : 
         this.random(-this.chunk.h / 4, this.chunk.h / 4);
 
@@ -52,11 +54,11 @@ export default class Node implements Interfaces.Node {
 
             y: this.chunk.y,
 
-            w: (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+            w: (this.Direction == Interfaces.Direction.VERTICAL) ? 
             this.chunk.w / 2 + shiftOffset : 
             this.chunk.w,
 
-            h: (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+            h: (this.Direction == Interfaces.Direction.VERTICAL) ? 
             this.chunk.h : 
             this.chunk.h / 2 + shiftOffset,
 
@@ -67,19 +69,19 @@ export default class Node implements Interfaces.Node {
         }, this.RNG);
 
         this.right = new Node({
-            x: (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+            x: (this.Direction == Interfaces.Direction.VERTICAL) ? 
             this.chunk.x + this.chunk.w / 2 + shiftOffset : 
             this.chunk.x,
 
-            y: (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+            y: (this.Direction == Interfaces.Direction.VERTICAL) ? 
             this.chunk.y : 
             this.chunk.y + this.chunk.h / 2 + shiftOffset,
             
-            w: (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+            w: (this.Direction == Interfaces.Direction.VERTICAL) ? 
             this.chunk.w / 2 - shiftOffset : 
             this.chunk.w,
 
-            h: (this.splitDirection == Interfaces.SplitDirection.VERTICAL) ? 
+            h: (this.Direction == Interfaces.Direction.VERTICAL) ? 
             this.chunk.h : 
             this.chunk.h / 2 - shiftOffset,
 
@@ -121,23 +123,23 @@ export default class Node implements Interfaces.Node {
         }
     }
 
-    constructPath(a: Interfaces.Point, b: Interfaces.Point, direction: Interfaces.SplitDirection, pathWidh: number): Path {
+    constructPathChunks(a: Interfaces.Point, b: Interfaces.Point, direction: Interfaces.Direction, pathWidth: number): PathChunk {
         let x1: number = Math.floor(a.x);
         let y1: number = Math.floor(a.y);
 
         let x2: number = Math.floor(b.x);
         let y2: number = Math.floor(b.y);
 
-        let w: number = (direction == Interfaces.SplitDirection.VERTICAL) ? x2 - x1 : pathWidh;
-        let h: number = (direction == Interfaces.SplitDirection.VERTICAL) ? pathWidh : y2 - y1;
+        let w: number = (direction == Interfaces.Direction.VERTICAL) ? x2 - x1 : pathWidth;
+        let h: number = (direction == Interfaces.Direction.VERTICAL) ? pathWidth : y2 - y1;
 
-        return new Path(x1, y1, x2, y2, w, h);
+        return new PathChunk(x1, y1, x2, y2, w, h);
     }
 
-    createPaths(): void {
+    createPathChunks(): void {
 
         if (this.left != null && this.right != null) {
-            this.paths.push(this.constructPath(
+            this.pathChunks.push(this.constructPathChunks(
                 {
                     x: this.left.chunk.x + this.left.chunk.w / 4,
                     y: this.left.chunk.y + this.left.chunk.h / 4,
@@ -148,12 +150,12 @@ export default class Node implements Interfaces.Node {
                     y: this.right.chunk.y + this.right.chunk.h / 1.5,
                 },
 
-                this.splitDirection,
-                1
+                this.Direction,
+                this.pathWidth
             ));
 
-            this.left.createPaths();
-            this.right.createPaths();
+            this.left.createPathChunks();
+            this.right.createPathChunks();
         }
     }
 
@@ -181,11 +183,11 @@ export default class Node implements Interfaces.Node {
         return roomArr;
     }
 
-    getPaths(): Path[] {
-        let pathArr: Path[] = this.paths;
+    getPathChunks(): PathChunk[] {
+        let pathArr: PathChunk[] = this.pathChunks;
 
         if (this.left != null && this.right != null) {
-            pathArr = [ ...pathArr, ...this.left.getPaths(), ...this.right.getPaths() ];
+            pathArr = [ ...pathArr, ...this.left.getPathChunks(), ...this.right.getPathChunks() ];
         }
 
         return pathArr;
