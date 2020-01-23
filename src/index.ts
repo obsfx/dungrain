@@ -1,8 +1,12 @@
-// import seedrandom from 'seedrandom';
-import Node from './Node'
-import Room from './Room';
-import Path from './Path';
-import Visualization from './Visulization';
+import seedrandom from 'seedrandom';
+
+import Node from './modules/Node';
+import Room from './modules/RoomChunk';
+import Path from './modules/Path';
+
+export default class dungrain {
+    constructor()
+}
 
 const reset = (
     col: number, 

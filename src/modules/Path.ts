@@ -1,13 +1,6 @@
-interface IPath {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
-    w: number;
-    h: number;
-}
+import { Interfaces } from '../interfaces.namespace';
 
-export default class Path implements IPath {
+export default class Path implements Interfaces.Path {
     x1: number;
     y1: number;
     x2: number;
