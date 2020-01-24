@@ -6,15 +6,13 @@
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b --watch",
-    "parcel": "parcel ./dev/index.html --out-dir ./output",
-    "parcel-build": "parcel build ./src/index.ts --out-dir ./build --out-file dungrain.build.js",
+    "test": "parcel ./dev/index.html",
     "rmout": "rm -R ./dist"
   },
   "author": "obsfx",
   "license": "ISC",
   "devDependencies": {
     "@types/seedrandom": "^2.4.28",
-    "parcel-bundler": "^1.12.4",
     "typescript": "^3.7.4"
   },
   "dependencies": {

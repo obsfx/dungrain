@@ -73,6 +73,7 @@ export namespace Interfaces {
 
     export interface Main {
         seed: string;
+        iterationCount: number;
         column: number;
         row: number;
         minimumWHRatio: number;

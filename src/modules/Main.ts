@@ -8,8 +8,9 @@ import Room from './Room';
 import PathChunk from './PathChunk';
 import Path from './Path';
 
-export default class Main implements Interfaces.Main {
+class Main implements Interfaces.Main {
     seed: string;
+    iterationCount: number;
     column: number;
     row: number;
     minimumWHRatio: number;
@@ -33,7 +34,8 @@ export default class Main implements Interfaces.Main {
     paths: Path[];
 
     constructor(args: {
-        seed: string,
+        seed: string | null,
+        iterationCount: number,
         column: number,
         row: number,
         minimumWHRatio: number,
@@ -48,6 +50,7 @@ export default class Main implements Interfaces.Main {
         }
     }) {
         this.seed = args.seed || Date.now().toString(16);
+        this.iterationCount = args.iterationCount;
         this.column = args.column;
         this.row = args.row;
         this.minimumWHRatio = args.minimumWHRatio;
@@ -70,12 +73,18 @@ export default class Main implements Interfaces.Main {
             minHeight: this.minimumChunkHeight
         }, this.RNG);
 
+        this.root.split(this.iterationCount);
+        this.root.generateRoomChunks();
+        this.root.createPathChunks();
+
         this.allFloors = [];
 
         this.roomChunks = this.root.getRoomChunks();
         this.pathChunks = this.root.getPathChunks();
         this.rooms = [];
         this.paths = [];
+
+        this.constructArrayMap();
     }
 
     createEmptyArrayMap(col: number, row: number): number[][] {
@@ -218,3 +227,5 @@ export default class Main implements Interfaces.Main {
         return this.arrayMap;
     }
 }
+
+export { Main as dungrain };
