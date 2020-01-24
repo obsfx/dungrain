@@ -1,23 +1,36 @@
 {
-  "name": "dg",
-  "version": "1.0.0",
-  "description": "",
+  "name": "dungrain",
+  "version": "0.1.0",
+  "description": "BSP based procedural dungeon generation package.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b --watch",
-    "standalone": "browserify ./src/index-standalone.ts -s dungrain -p [ tsify ] > bundle.js",
+    "standalone": "browserify ./src/index-standalone.ts -s dungrain -p [ tsify ] > ./build/dungrain.js",
+    "minify": "uglifyjs ./build/dungrain.js -c -o ./build/dungrain.min.js",
+    "build-standalone-and-minify": "npm run standalone && npm run minify",
     "rmout": "rm -R ./dist"
   },
+  "keywords": [
+    "procedural",
+    "generation",
+    "seed",
+    "random",
+    "dungeon",
+    "binary space partitioning",
+    "game",
+    "development"
+  ],
   "author": "obsfx",
-  "license": "ISC",
+  "license": "WTFPL",
   "devDependencies": {
     "@types/node": "^13.5.0",
     "@types/seedrandom": "^2.4.28",
     "browserify": "^16.5.0",
     "tsify": "^4.0.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "uglify-js": "^3.7.6"
   },
   "dependencies": {
     "seedrandom": "^3.0.5"
