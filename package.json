@@ -2,17 +2,21 @@
   "name": "dg",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b --watch",
-    "test": "parcel ./dev/index.html",
+    "standalone": "browserify ./src/index-standalone.ts -s dungrain -p [ tsify ] > bundle.js",
     "rmout": "rm -R ./dist"
   },
   "author": "obsfx",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^13.5.0",
     "@types/seedrandom": "^2.4.28",
+    "browserify": "^16.5.0",
+    "tsify": "^4.0.1",
     "typescript": "^3.7.4"
   },
   "dependencies": {

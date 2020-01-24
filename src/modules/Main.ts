@@ -7,8 +7,9 @@ import RoomChunk from './RoomChunk';
 import Room from './Room';
 import PathChunk from './PathChunk';
 import Path from './Path';
+import InputErrorHandler from './InputErrorHandler';
 
-class Main implements Interfaces.Main {
+export default class Main implements Interfaces.Main {
     seed: string;
     iterationCount: number;
     column: number;
@@ -34,14 +35,14 @@ class Main implements Interfaces.Main {
     paths: Path[];
 
     constructor(args: {
-        seed: string | null,
+        seed: string | undefined,
         iterationCount: number,
         column: number,
         row: number,
-        minimumWHRatio: number,
-        maximumWHRatio: number,
-        minimumChunkWidth: number,
-        minimumChunkHeight: number,
+        minimumWHRatio: number | undefined,
+        maximumWHRatio: number | undefined,
+        minimumChunkWidth: number | undefined,
+        minimumChunkHeight: number | undefined,
         indexMap: {
             Wall: number,
             Path: number,
@@ -49,16 +50,27 @@ class Main implements Interfaces.Main {
             Empty: number
         }
     }) {
+        // args.seed = args.seed || Date.now().toString(16);
+        // args.minimumWHRatio = args.minimumWHRatio || 0.5;
+        // args.maximumWHRatio = args.maximumWHRatio || 2.0;
+        // args.minimumChunkWidth = args.minimumChunkWidth || 8;
+        // args.minimumChunkHeight = args.minimumChunkHeight || 8;
+
+        let errors: string[] = InputErrorHandler(args);
+
+        if (errors.length > 0) {
+            throw new Error('dungrain error: please check your arguments. \n' + errors.join('\n'));
+        }
+
         this.seed = args.seed || Date.now().toString(16);
         this.iterationCount = args.iterationCount;
         this.column = args.column;
         this.row = args.row;
-        this.minimumWHRatio = args.minimumWHRatio;
-        this.maximumWHRatio = args.maximumWHRatio;
-        this.minimumChunkWidth = args.minimumChunkWidth;
-        this.minimumChunkHeight = args.minimumChunkHeight;
+        this.minimumWHRatio = args.minimumWHRatio || 0.5;
+        this.maximumWHRatio = args.maximumWHRatio || 2.0;
+        this.minimumChunkWidth = args.minimumChunkWidth || 8;
+        this.minimumChunkHeight = args.minimumChunkHeight || 8;
         this.indexMap = args.indexMap;
-
         this.RNG = seedrandom(this.seed);
         this.arrayMap = this.createEmptyArrayMap(this.column, this.row);
 
@@ -211,6 +223,10 @@ class Main implements Interfaces.Main {
         this.placeRooms();
     }
 
+    getSeed(): string {
+        return this.seed;
+    }
+
     getRooms(): Room[] {
         return this.rooms;
     }
@@ -227,5 +243,3 @@ class Main implements Interfaces.Main {
         return this.arrayMap;
     }
 }
-
-export { Main as dungrain };

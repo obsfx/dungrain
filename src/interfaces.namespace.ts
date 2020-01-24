@@ -72,14 +72,14 @@ export namespace Interfaces {
     }
 
     export interface Main {
-        seed: string;
+        seed: string | undefined;
         iterationCount: number;
         column: number;
         row: number;
-        minimumWHRatio: number;
-        maximumWHRatio: number;
-        minimumChunkWidth: number;
-        minimumChunkHeight: number;
+        minimumWHRatio: number | undefined;
+        maximumWHRatio: number | undefined;
+        minimumChunkWidth: number | undefined;
+        minimumChunkHeight: number | undefined;
         indexMap: {
             Wall: number,
             Path: number,
@@ -104,6 +104,7 @@ export namespace Interfaces {
 
         constructArrayMap(): void;
 
+        getSeed(): string;
         getRooms(): Room[];
         getPaths(): Path[];
         getAllFloors(): Floor[];
