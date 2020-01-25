@@ -144,6 +144,6 @@ getSeed() // (returns the seed of the generated dungeon)
 
 ##### see in action @codepen
 
-i made a codepen visualization demo with early version of this. You can play with that here: https://codepen.io/omercanbalandi/pen/JjoeKrQ
+i made a codepen visualization demo with early version of this. You can play with that from here: https://codepen.io/omercanbalandi/pen/JjoeKrQ
 
 ![](https://raw.githubusercontent.com/obsfx/dungrain/master/media/codepen.gif)
