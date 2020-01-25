@@ -1,9 +1,13 @@
 {
   "name": "dungrain",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "BSP based procedural dungeon generation package.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/obsfx/dungrain.git"
+  },
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b --watch",
