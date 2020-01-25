@@ -1087,7 +1087,7 @@ var Main = /** @class */ (function () {
         if (errors.length > 0) {
             throw new Error('dungrain error: please check your arguments. \n' + errors.join('\n'));
         }
-        this.seed = args.seed || Date.now().toString(16);
+        this.seed = args.seed || Math.abs(seedrandom_1.default().int32()).toString();
         this.iterationCount = args.iterationCount;
         this.column = args.column;
         this.row = args.row;

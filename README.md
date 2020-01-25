@@ -65,7 +65,7 @@ All arguments have to be passed into class as an object.
         Empty: number
         
     }
-	seed: string (optional) (default: hex of Date.now() value at the moment),
+	seed: string (optional) (default: it will be generated randomly),
 	minimumWHRatio: number (optional) (default: 0.5),
 	maximumWHRatio: number (optional) (default: 2.0),
 	minimumChunkWidth: number (optional) (default: 8),
