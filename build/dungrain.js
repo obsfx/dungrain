@@ -1083,11 +1083,6 @@ var Path_1 = __importDefault(require("./Path"));
 var InputErrorHandler_1 = __importDefault(require("./InputErrorHandler"));
 var Main = /** @class */ (function () {
     function Main(args) {
-        // args.seed = args.seed || Date.now().toString(16);
-        // args.minimumWHRatio = args.minimumWHRatio || 0.5;
-        // args.maximumWHRatio = args.maximumWHRatio || 2.0;
-        // args.minimumChunkWidth = args.minimumChunkWidth || 8;
-        // args.minimumChunkHeight = args.minimumChunkHeight || 8;
         var errors = InputErrorHandler_1.default(args);
         if (errors.length > 0) {
             throw new Error('dungrain error: please check your arguments. \n' + errors.join('\n'));

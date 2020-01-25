@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Example</title>
+
+        <style>
+            canvas {
+                border: 1px solid #000;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas class="canvas" width="1000" height="500"></canvas>
+
+        <script src="./dungrain.min.js"></script>
+        <script>
+            let dungeon = new dungrain({
+                seed: 'example',
+                iterationCount: 6,
+                column: 100,
+                row: 50,
+                indexMap: {
+                    Wall: 3,
+                    Path: 2,
+                    Room: 1,
+                    Empty: 0
+                },
+                minimumWHRatio: 0.8,
+                maximumWHRatio: 1.6,
+                minimumChunkWidth: 2,
+                minimumChunkHeight: 2
+            });
+
+            let map = dungeon.getMap();
+
+            let canvas = document.querySelector('.canvas');
+            let ctx = canvas.getContext('2d');
+
+            for (let i = 0; i < map.length; i++) {
+                for (let j = 0; j < map[i].length; j++) {
+                    let tile = map[i][j];
+
+                    if (tile == dungeon.indexMap.Wall) {
+                        ctx.fillStyle = 'black';
+                    } else if (tile == dungeon.indexMap.Path) {
+                        ctx.fillStyle = 'blue';
+                    } else if (tile == dungeon.indexMap.Room) { 
+                        ctx.fillStyle = 'green';
+                    } else {
+                        ctx.fillStyle = 'white';
+                    }
+
+                    ctx.fillRect(j * 10, i * 10, 10, 10);
+                }
+            }
+        </script>
+    </body>
+</html>

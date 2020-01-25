@@ -50,12 +50,6 @@ export default class Main implements Interfaces.Main {
             Empty: number
         }
     }) {
-        // args.seed = args.seed || Date.now().toString(16);
-        // args.minimumWHRatio = args.minimumWHRatio || 0.5;
-        // args.maximumWHRatio = args.maximumWHRatio || 2.0;
-        // args.minimumChunkWidth = args.minimumChunkWidth || 8;
-        // args.minimumChunkHeight = args.minimumChunkHeight || 8;
-
         let errors: string[] = InputErrorHandler(args);
 
         if (errors.length > 0) {

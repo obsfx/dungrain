@@ -92,6 +92,9 @@
   },
 
   "exclude": [
+    "./node_modules",
+    "./dist",
+    "./build",
     "./src/*-standalone.ts"
   ]
 }
