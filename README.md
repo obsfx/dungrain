@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/obsfx/dungrain/master/media/logo.png)
 
-# dungrain
+# dungrain [![npm version](https://badge.fury.io/js/dungrain.svg)](https://badge.fury.io/js/dungrain)
 
 dungrain is a procedural dungeon generation library that was built on binary space partitioning method. It takes some arguments as an object and creates 2D number array that contains types of tiles that placed based on `indexMap` (`Wall`, `Path`, `Room`, `Empty`) values.
 
