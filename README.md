@@ -94,45 +94,45 @@ getSeed() // (returns the seed of the generated dungeon)
 
 <script src="./build/dungrain.min.js"></script>
 <script>
+	let canvas = document.querySelector('.canvas');
+	let ctx = canvas.getContext('2d');
+	
 	let dungeon = new dungrain({
-    	seed: 'example',
-        iterationCount: 6,
-        column: 100,
-        row: 50,
-        indexMap: {
-        Wall: 3,
-        Path: 2,
-        Room: 1,
-        Empty: 0
-        },
-        minimumWHRatio: 0.8,
-        maximumWHRatio: 1.6,
-        minimumChunkWidth: 2,
-        minimumChunkHeight: 2
+		seed: 'example',
+		iterationCount: 6,
+		column: 100,
+		row: 50,
+		indexMap: {
+			Wall: 3,
+			Path: 2,
+			Room: 1,
+			Empty: 0
+		},
+		minimumWHRatio: 0.8,
+		maximumWHRatio: 1.6,
+		minimumChunkWidth: 2,
+		minimumChunkHeight: 2
 	});
 
 	let map = dungeon.getMap();
 
-	let canvas = document.querySelector('.canvas');
-    let ctx = canvas.getContext('2d');
-
 	for (let i = 0; i < map.length; i++) {
-    	for (let j = 0; j < map[i].length; j++) {
-        	let tile = map[i][j];
+		for (let j = 0; j < map[i].length; j++) {
+			let tile = map[i][j];
 
 			if (tile == dungeon.indexMap.Wall) {
-            	ctx.fillStyle = 'black';
-           	} else if (tile == dungeon.indexMap.Path) {
-            	ctx.fillStyle = 'blue';
-            } else if (tile == dungeon.indexMap.Room) { 
-            	ctx.fillStyle = 'green';
-            } else {
-            	ctx.fillStyle = 'white';
-            }
+				ctx.fillStyle = 'black';
+			} else if (tile == dungeon.indexMap.Path) {
+				ctx.fillStyle = 'blue';
+			} else if (tile == dungeon.indexMap.Room) { 
+				ctx.fillStyle = 'green';
+			} else {
+				ctx.fillStyle = 'white';
+			}
 
 			ctx.fillRect(j * 10, i * 10, 10, 10);
-        }
-    }
+		}
+	}
 </script>
 ```
 
