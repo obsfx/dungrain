@@ -1,13 +1,13 @@
 {
   "name": "dungrain",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "BSP based procedural dungeon generation package.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b --watch",
-    "standalone": "browserify ./src/index-standalone.ts -s dungrain -p [ tsify ] > ./build/dungrain.js",
+    "standalone": "browserify ./src/index.ts -s dungrain -p [ tsify ] > ./build/dungrain.js",
     "minify": "uglifyjs ./build/dungrain.js -c -o ./build/dungrain.min.js",
     "build-standalone-and-minify": "npm run standalone && npm run minify",
     "rmout": "rm -R ./dist"

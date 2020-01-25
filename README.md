@@ -32,7 +32,7 @@ npm install dungrain
 ```
 
 ```javascript
-import dungrain from 'dungrain';
+const dungrain = require('dungrain');
 
 let dungeon = new dungrain({
     iterationCount: 20,
