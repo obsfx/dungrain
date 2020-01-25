@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/obsfx/dungrain/master/logo.png)
+![](https://raw.githubusercontent.com/obsfx/dungrain/master/media/logo.png)
 
 # dungrain
 
@@ -53,7 +53,7 @@ let dungeon = new dungrain({
 
 All arguments have to be passed into class as an object.
 
-```json
+```
 {
     iterationCount: number,
     column: number,
@@ -138,7 +138,7 @@ getSeed() // (returns the seed of the generated dungeon)
 
 ##### output
 
-![](https://raw.githubusercontent.com/obsfx/dungrain/master/example.png)
+![](https://raw.githubusercontent.com/obsfx/dungrain/master/media/example.png)
 
 
 
@@ -146,4 +146,4 @@ getSeed() // (returns the seed of the generated dungeon)
 
 i made a codepen visualization demo with early version of this. You can play with that here: https://codepen.io/omercanbalandi/pen/JjoeKrQ
 
-![](https://raw.githubusercontent.com/obsfx/dungrain/master/codepen.gif)
+![](https://raw.githubusercontent.com/obsfx/dungrain/master/media/codepen.gif)
